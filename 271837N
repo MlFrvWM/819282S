@@ -886,10 +886,38 @@ local function isWhitelisted(player)
     return false
 end
 
-local titleLabel = tabKilling:AddLabel("Killing")
+local titleLabel = Killing:AddLabel("Misc")
 titleLabel.TextSize = 20
 
-local button = tabKilling:AddButton("Remove Attack Animations", function()
+local dropdown = Killing:AddDropdown("Select Pet", function(text)
+    local petsFolder = game.Players.LocalPlayer.petsFolder
+    for _, folder in pairs(petsFolder:GetChildren()) do
+        if folder:IsA("Folder") then
+            for _, pet in pairs(folder:GetChildren()) do
+                game:GetService("ReplicatedStorage").rEvents.equipPetEvent:FireServer("unequipPet", pet)
+            end
+        end
+    end
+    task.wait(0.2)
+
+    local petName = text
+    local petsToEquip = {}
+
+    for _, pet in pairs(game.Players.LocalPlayer.petsFolder.Unique:GetChildren()) do
+        if pet.Name == petName then
+            table.insert(petsToEquip, pet)
+        end
+    end
+
+    for i = 1, math.min(8, #petsToEquip) do
+        game:GetService("ReplicatedStorage").rEvents.equipPetEvent:FireServer("equipPet", petsToEquip[i])
+        task.wait(0.1)
+    end
+end)
+dropdown:Add("Wild Wizard")
+dropdown:Add("Mighty Monster")
+
+local button = Killing:AddButton("Remove Attack Animations", function()
     local blockedAnimations = {
         ["rbxassetid://3638729053"] = true,
         ["rbxassetid://3638767427"] = true,
@@ -1048,9 +1076,9 @@ local button = tabKilling:AddButton("Remove Attack Animations", function()
     end
 end)
 
-local nothingLabel = tabKilling:AddLabel("")
+local nothingLabel = Killing:AddLabel("")
 
-local killingLabel = tabKilling:AddLabel("Auto Kill")
+local killingLabel = Killing:AddLabel("Auto Kill")
 killingLabel.TextSize = 20
 
 _G.whitelistedPlayers = _G.whitelistedPlayers or {}
@@ -1078,7 +1106,7 @@ local function getPlayerDisplayText(player)
     return player.DisplayName .. " | " .. player.Name
 end
 
-local whitelistDropdown = tabKilling:AddDropdown("Whitelist", function(selectedText)
+local whitelistDropdown = Killing:AddDropdown("Whitelist", function(selectedText)
     local playerName = selectedText:match("| (.+)$")
     if playerName then
         playerName = playerName:gsub("^%s*(.-)%s*$", "%1") 
@@ -1089,65 +1117,7 @@ local whitelistDropdown = tabKilling:AddDropdown("Whitelist", function(selectedT
     end
 end)
 
-tabKilling:AddSwitch("Auto Good Karma", function(bool)
-    autoGoodKarma = bool
-    task.spawn(function()
-        while autoGoodKarma do
-            local playerChar = LocalPlayer.Character
-            local rightHand = playerChar and playerChar:FindFirstChild("RightHand")
-            local leftHand = playerChar and playerChar:FindFirstChild("LeftHand")
-            if playerChar and rightHand and leftHand then
-                for _, target in ipairs(Players:GetPlayers()) do
-                    if target ~= LocalPlayer then
-                        local evilKarma = target:FindFirstChild("evilKarma")
-                        local goodKarma = target:FindFirstChild("goodKarma")
-                        if evilKarma and goodKarma and evilKarma:IsA("IntValue") and goodKarma:IsA("IntValue") and evilKarma.Value > goodKarma.Value then
-                            local rootPart = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
-                            if rootPart then
-                                firetouchinterest(rightHand, rootPart, 1)
-                                firetouchinterest(leftHand, rootPart, 1)
-                                firetouchinterest(rightHand, rootPart, 0)
-                                firetouchinterest(leftHand, rootPart, 0)
-                            end
-                        end
-                    end
-                end
-            end
-            task.wait(0.01)
-        end
-    end)
-end)
-
-tabKilling:AddSwitch("Auto Bad Karma", function(bool)
-    autoBadKarma = bool
-    task.spawn(function()
-        while autoBadKarma do
-            local playerChar = LocalPlayer.Character
-            local rightHand = playerChar and playerChar:FindFirstChild("RightHand")
-            local leftHand = playerChar and playerChar:FindFirstChild("LeftHand")
-            if playerChar and rightHand and leftHand then
-                for _, target in ipairs(Players:GetPlayers()) do
-                    if target ~= LocalPlayer then
-                        local evilKarma = target:FindFirstChild("evilKarma")
-                        local goodKarma = target:FindFirstChild("goodKarma")
-                        if evilKarma and goodKarma and evilKarma:IsA("IntValue") and goodKarma:IsA("IntValue") and goodKarma.Value > evilKarma.Value then
-                            local rootPart = target.Character and target.Character:FindFirstChild("HumanoidRootPart")
-                            if rootPart then
-                                firetouchinterest(rightHand, rootPart, 1)
-                                firetouchinterest(leftHand, rootPart, 1)
-                                firetouchinterest(rightHand, rootPart, 0)
-                                firetouchinterest(leftHand, rootPart, 0)
-                            end
-                        end
-                    end
-                end
-            end
-            task.wait(0.01)
-        end
-    end)
-end)
-
-local switch = tabKilling:AddSwitch("Auto Kill", function(bool)
+local switch = Killing:AddSwitch("Kill Everyone", function(bool)
     _G.killAll = bool
     if bool then
         if not _G.killAllConnection then
@@ -1170,11 +1140,7 @@ local switch = tabKilling:AddSwitch("Auto Kill", function(bool)
 end)
 switch:Set(false)
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local friendWhitelistActive = false
-
-local switch = tabKilling:AddSwitch("Auto Whitelist Friends", function(bool)
+local switch = Killing:AddSwitch("Whitelist Friends", function(bool)
     _G.whitelistFriends = bool
 
     if bool then
@@ -1200,12 +1166,12 @@ end)
 
 switch:Set(false)
 
-local nothingLabel = tabKilling:AddLabel("")
+local nothingLabel = Killing:AddLabel("")
 
-local killtargetLabel = tabKilling:AddLabel("Kill Targets")
+local killtargetLabel = Killing:AddLabel("Kill Targets")
 killtargetLabel.TextSize = 20
 
-local blacklistDropdown = Killing:AddDropdown("Select Target", function(selectedText)
+local blacklistDropdown = Killing:AddDropdown("Blacklist", function(selectedText)
     local playerName = selectedText:match("| (.+)$")
     if playerName then
         playerName = playerName:gsub("^%s*(.-)%s*$", "%1") 
@@ -1250,7 +1216,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(player)
     end
 end)
 
-local blacklistKillSwitch = tabKilling:AddSwitch("Kill Target(s)", function(bool)
+local blacklistKillSwitch = Killing:AddSwitch("Kill Blacklist", function(bool)
     _G.killBlacklistedOnly = bool
     if bool then
         if not _G.blacklistKillConnection then
@@ -1272,69 +1238,112 @@ local blacklistKillSwitch = tabKilling:AddSwitch("Kill Target(s)", function(bool
     end
 end)
 
-local spyTargetDropdown = tabKilling:AddDropdown("Select Spy Target", function(name)
-    targetPlayerName = name
-end)
 
-for _, player in ipairs(Players:GetPlayers()) do
-    if player ~= LocalPlayer then
-        spyTargetDropdown:Add(player.Name)
-    end
-end
+local playerToSpectate = nil
+local spectating = false
+local camera = game.Workspace.CurrentCamera
+local currentTargetConnection = nil
 
-Players.PlayerAdded:Connect(function(player)
-    if player ~= LocalPlayer then
-        spyTargetDropdown:Add(player.Name)
+local function updateSpectateTarget(targetPlayer)
+    if currentTargetConnection then
+        currentTargetConnection:Disconnect()
+        currentTargetConnection = nil
     end
-end)
 
-Players.PlayerRemoving:Connect(function(player)
-    if player ~= LocalPlayer then
-        spyTargetDropdown:Clear()
-        for _, plr in ipairs(Players:GetPlayers()) do
-            if plr ~= LocalPlayer then
-                spyTargetDropdown:Add(plr.Name)
-            end
-        end
+    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+        camera.CameraSubject = targetPlayer.Character.Humanoid
     end
-end)
 
-tabKilling:AddSwitch("Spy Player", function(bool)
-    spying = bool
-    if not spying then
-        local cam = workspace.CurrentCamera
-        cam.CameraSubject = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") or LocalPlayer
-        return
-    end
-    task.spawn(function()
-        while spying do
-            local target = Players:FindFirstChild(targetPlayerName)
-            if target and target ~= LocalPlayer then
-                local humanoid = target.Character and target.Character:FindFirstChild("Humanoid")
-                if humanoid then
-                    workspace.CurrentCamera.CameraSubject = humanoid
-                end
-            end
-            task.wait(0.1)
+    currentTargetConnection = targetPlayer.CharacterAdded:Connect(function(newCharacter)
+        local humanoid = newCharacter:WaitForChild("Humanoid", 5)
+        if humanoid then
+            camera.CameraSubject = humanoid
         end
     end)
+end
+
+Killing:AddTextBox("Player", function(text)
+    playerToSpectate = text
+end, {
+    ["cleartext"] = true,
+    ["text"] = ""
+})
+
+Killing:AddSwitch("Spectate", function(bool)
+    spectating = bool
+
+    if spectating and playerToSpectate then
+        local targetPlayer = game.Players:FindFirstChild(playerToSpectate)
+        if targetPlayer then
+            updateSpectateTarget(targetPlayer)
+        end
+    else
+        if currentTargetConnection then
+            currentTargetConnection:Disconnect()
+            currentTargetConnection = nil
+        end
+        local localPlayer = game.Players.LocalPlayer
+        if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
+            camera.CameraSubject = localPlayer.Character.Humanoid
+        end
+    end
+end):Set(false)
+
+local nothingLabel = Killing:AddLabel("")
+
+local deathringLabel = Killing:AddLabel("Kill Aura")
+deathringLabel.TextSize = 20
+
+Killing:AddTextBox("Range (1-140)", function(text)
+    local range = tonumber(text)
+    if range then
+        _G.deathRingRange = math.clamp(range, 1, 140)
+    end
 end)
 
-local nothingLabel = tabKilling:AddLabel("")
+local deathRingSwitch = Killing:AddSwitch("Death Ring", function(bool)
+    _G.deathRingEnabled = bool
+    if bool then
+        if not _G.deathRingConnection then
+            _G.deathRingConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                local character = checkCharacter()
+                local myPosition = character and character:FindFirstChild("HumanoidRootPart") and character.HumanoidRootPart.Position
+                if not myPosition then return end
 
-local whitelistLabel = tabKilling:AddLabel("Whitelist: None")
+                for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+                    if player ~= game.Players.LocalPlayer and not isWhitelisted(player) and isPlayerAlive(player) then
+                        local distance = (myPosition - player.Character.HumanoidRootPart.Position).Magnitude
+                        if distance <= (_G.deathRingRange or 20) then
+                            killPlayer(player)
+                        end
+                    end
+                end
+            end)
+        end
+    else
+        if _G.deathRingConnection then
+            _G.deathRingConnection:Disconnect()
+            _G.deathRingConnection = nil
+        end
+    end
+end)
+deathRingSwitch:Set(false)
+
+local nothingLabel = Killing:AddLabel("")
+
+local whitelistLabel = Killing:AddLabel("Whitelist: None")
 whitelistLabel.TextColor3 = Color3.fromRGB(26, 212, 51)
 whitelistLabel.TextSize = 17
 
-tabKilling:AddButton("Clear Whitelist", function()
+Killing:AddButton("Clear Whitelist", function()
     _G.whitelistedPlayers = {}
 end)
 
-local blacklistLabel = tabKilling:AddLabel("Blacklist: None")
+local blacklistLabel = Killing:AddLabel("Blacklist: None")
 blacklistLabel.TextColor3 = Color3.fromRGB(191, 25, 25)
 blacklistLabel.TextSize = 17
 
-tabKilling:AddButton("Clear Blacklist", function()
+Killing:AddButton("Clear Blacklist", function()
     _G.blacklistedPlayers = {}
 end)
 
