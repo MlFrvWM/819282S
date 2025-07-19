@@ -177,19 +177,26 @@ end)
 
 tabFastStrenght:AddLabel("Complements").TextSize = 25
 
-local function activateProteinEgg()
-    local tool = player.Character:FindFirstChild("Protein Egg") or player.Backpack:FindFirstChild("Protein Egg")
-    if tool then
-        muscleEvent:FireServer("proteinEgg", tool)
+local autoEatEnabled = false
+
+local function eatProteinEgg()
+    local player = game.Players.LocalPlayer
+    local backpack = player:WaitForChild("Backpack")
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    local egg = backpack:FindFirstChild("Protein Egg")
+    if egg then
+        egg.Parent = character
+        pcall(function()
+            egg:Activate()
+        end)
     end
 end
 
-local running = false
-
 task.spawn(function()
     while true do
-        if running then
-            activateProteinEgg()
+        if autoEatEnabled then
+            eatProteinEgg()
             task.wait(1800)
         else
             task.wait(1)
@@ -197,11 +204,8 @@ task.spawn(function()
     end
 end)
 
-local switch = tabFastStrenght:AddSwitch("Auto Eat Egg", function(state)
-    running = state
-    if state then
-        activateProteinEgg()
-    end
+tabFastStrenght:AddSwitch("Auto Eat Egg", function(state)
+    autoEatEnabled = state
 end)
 
 tabFastStrenght:AddButton("Remove Textures", function()
@@ -473,19 +477,26 @@ local switch = tabFastRebirths:AddSwitch("Lock Position", function(Value)
     end
 end)
 
-local function activateProteinEgg()
-    local tool = player.Character:FindFirstChild("Protein Egg") or player.Backpack:FindFirstChild("Protein Egg")
-    if tool then
-        muscleEvent:FireServer("proteinEgg", tool)
+local autoEatEnabled = false
+
+local function eatProteinEgg()
+    local player = game.Players.LocalPlayer
+    local backpack = player:WaitForChild("Backpack")
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    local egg = backpack:FindFirstChild("Protein Egg")
+    if egg then
+        egg.Parent = character
+        pcall(function()
+            egg:Activate()
+        end)
     end
 end
 
-local running = false
-
 task.spawn(function()
     while true do
-        if running then
-            activateProteinEgg()
+        if autoEatEnabled then
+            eatProteinEgg()
             task.wait(1800)
         else
             task.wait(1)
@@ -493,11 +504,8 @@ task.spawn(function()
     end
 end)
 
-local switch = tabFastRebirths:AddSwitch("Auto Eat Egg", function(state)
-    running = state
-    if state then
-        activateProteinEgg()
-    end
+tabFastRebirths:AddSwitch("Auto Eat Egg", function(state)
+    autoEatEnabled = state
 end)
 
 tabFastRebirths:AddButton("Remove Textures", function()
