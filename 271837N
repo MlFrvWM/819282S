@@ -841,7 +841,7 @@ tabRock:AddSwitch("Jungle Rock", function(Value)
     end)
 end)
 
-local Killing = window:AddTab("Killer")
+local tabKilling = window:AddTab("Killer")
 
 local function checkCharacter()
     if not game.Players.LocalPlayer.Character then
@@ -886,10 +886,10 @@ local function isWhitelisted(player)
     return false
 end
 
-local titleLabel = Killing:AddLabel("Killing")
+local titleLabel = tabKilling:AddLabel("Killing")
 titleLabel.TextSize = 20
 
-local button = Killing:AddButton("Remove Attack Animations", function()
+local button = tabKilling:AddButton("Remove Attack Animations", function()
     local blockedAnimations = {
         ["rbxassetid://3638729053"] = true,
         ["rbxassetid://3638767427"] = true,
@@ -1048,9 +1048,9 @@ local button = Killing:AddButton("Remove Attack Animations", function()
     end
 end)
 
-local nothingLabel = Killing:AddLabel("")
+local nothingLabel = tabKilling:AddLabel("")
 
-local killingLabel = Killing:AddLabel("Auto Kill")
+local killingLabel = tabKilling:AddLabel("Auto Kill")
 killingLabel.TextSize = 20
 
 _G.whitelistedPlayers = _G.whitelistedPlayers or {}
@@ -1078,7 +1078,7 @@ local function getPlayerDisplayText(player)
     return player.DisplayName .. " | " .. player.Name
 end
 
-local whitelistDropdown = Killing:AddDropdown("Whitelist", function(selectedText)
+local whitelistDropdown = tabKilling:AddDropdown("Whitelist", function(selectedText)
     local playerName = selectedText:match("| (.+)$")
     if playerName then
         playerName = playerName:gsub("^%s*(.-)%s*$", "%1") 
@@ -1089,7 +1089,7 @@ local whitelistDropdown = Killing:AddDropdown("Whitelist", function(selectedText
     end
 end)
 
-local switch = Killing:AddSwitch("Auto Kill", function(bool)
+local switch = tabKilling:AddSwitch("Auto Kill", function(bool)
     _G.killAll = bool
     if bool then
         if not _G.killAllConnection then
@@ -1112,7 +1112,7 @@ local switch = Killing:AddSwitch("Auto Kill", function(bool)
 end)
 switch:Set(false)
 
-local switch = Killing:AddSwitch("Auto Whitelist Friends", function(bool)
+local switch = tabKilling:AddSwitch("Auto Whitelist Friends", function(bool)
     _G.whitelistFriends = bool
 
     if bool then
@@ -1138,12 +1138,12 @@ end)
 
 switch:Set(false)
 
-local nothingLabel = Killing:AddLabel("")
+local nothingLabel = tabKilling:AddLabel("")
 
-local killtargetLabel = Killing:AddLabel("Kill Targets")
+local killtargetLabel = tabKilling:AddLabel("Kill Targets")
 killtargetLabel.TextSize = 20
 
-local blacklistDropdown = Killing:AddDropdown("Select Target", function(selectedText)
+local blacklistDropdown = tabKilling:AddDropdown("Select Target", function(selectedText)
     local playerName = selectedText:match("| (.+)$")
     if playerName then
         playerName = playerName:gsub("^%s*(.-)%s*$", "%1") 
@@ -1188,7 +1188,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(player)
     end
 end)
 
-local blacklistKillSwitch = Killing:AddSwitch("Kill Target(s)", function(bool)
+local blacklistKillSwitch = tabKilling:AddSwitch("Kill Target(s)", function(bool)
     _G.killBlacklistedOnly = bool
     if bool then
         if not _G.blacklistKillConnection then
@@ -1210,21 +1210,21 @@ local blacklistKillSwitch = Killing:AddSwitch("Kill Target(s)", function(bool)
     end
 end)
 
-local nothingLabel = Killing:AddLabel("")
+local nothingLabel = tabKilling:AddLabel("")
 
-local whitelistLabel = Killing:AddLabel("Whitelist: None")
+local whitelistLabel = tabKilling:AddLabel("Whitelist: None")
 whitelistLabel.TextColor3 = Color3.fromRGB(26, 212, 51)
 whitelistLabel.TextSize = 17
 
-Killing:AddButton("Clear Whitelist", function()
+tabKilling:AddButton("Clear Whitelist", function()
     _G.whitelistedPlayers = {}
 end)
 
-local blacklistLabel = Killing:AddLabel("Blacklist: None")
+local blacklistLabel = tabKilling:AddLabel("Blacklist: None")
 blacklistLabel.TextColor3 = Color3.fromRGB(191, 25, 25)
 blacklistLabel.TextSize = 17
 
-Killing:AddButton("Clear Blacklist", function()
+tabKilling:AddButton("Clear Blacklist", function()
     _G.blacklistedPlayers = {}
 end)
 
