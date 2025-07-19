@@ -925,7 +925,7 @@ local whitelistDropdown = Killing:AddDropdown("Whitelist", function(selectedText
     end
 end)
 
-local switch = Killing:AddSwitch("Kill Everyone", function(bool)
+local switch = Killing:AddSwitch("Auto Kill", function(bool)
     _G.killAll = bool
     if bool then
         if not _G.killAllConnection then
