@@ -886,7 +886,7 @@ local function isWhitelisted(player)
     return false
 end
 
-local killingLabel = Killing:AddLabel("Auto Kill")
+local killingLabel = Killing:AddLabel("Killing")
 killingLabel.TextSize = 20
 
 _G.whitelistedPlayers = _G.whitelistedPlayers or {}
