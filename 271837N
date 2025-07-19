@@ -1,0 +1,843 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local whitelist = {
+    ["SadNii4"] = true,
+    ["82iwkwjw3"] = true,
+    ["EternaIKing_ofc"] = true,
+    ["EternalQueen_ofc"] = true,
+    ["OfEternal_king"] = true,
+    ["OfEternal_queen"] = true,
+    ["PROPLAYER292827"] = true,
+    ["ilvieharbor73"] = true,
+    ["TOQUIO_94"] = true,
+    ["TOQUIO_944"] = true,
+    ["ARMY_S0LDIER8"] = true,
+    ["dorrido13"] = true,
+    ["PEBUGADOTUTORIAL"] = true,
+    ["TheLittle8Prince"] = true,
+    ["Italo444hzx"] = true,
+    ["NOOB_SEUPESADELO"] = true,
+    ["Voa_Passarinho8"] = true,
+    ["SadNii0"] = true,
+    ["Bryan_671jayb"] = true,
+    ["Nicke_Nii"] = true,
+    ["User21"] = true,
+    ["User22"] = true,
+    ["User23"] = true,
+    ["User24"] = true,
+    ["User25"] = true,
+    ["User26"] = true,
+    ["User27"] = true,
+    ["User28"] = true,
+    ["User29"] = true,
+    ["User30"] = true,
+    ["User31"] = true,
+    ["User32"] = true,
+    ["User33"] = true,
+    ["User34"] = true,
+    ["User35"] = true,
+    ["User36"] = true,
+    ["User37"] = true,
+    ["User38"] = true,
+    ["User39"] = true
+}
+
+if not whitelist[LocalPlayer.Name] then
+    LocalPlayer:Kick("VocÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âª nÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o estÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ na whitelist para usar este script.")
+    return
+end
+
+print("UsuÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio autorizado:", LocalPlayer.Name)
+
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/MlFrvWM/BBLT81/main/BL81827TC", true))()
+
+local window = library:AddWindow("Sad Private V2", {
+    main_color = Color3.fromRGB(117, 6, 29),
+    min_size = Vector2.new(740, 500),
+    can_resize = false,
+})
+
+local function setFontRecursive(guiObject, font)
+    for _, obj in pairs(guiObject:GetDescendants()) do
+        if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then
+            obj.Font = font
+        end
+    end
+end
+
+spawn(function()
+    repeat wait() until window.gui
+    setFontRecursive(window.gui, Enum.Font.SourceSansBold)
+end)
+
+local tabFastStrenght = window:AddTab("Fast Strenght")
+
+tabFastStrenght:AddTextBox("Multiplier Rep", function(v)
+          setws = v
+    end)
+     
+    local isGrinding = false 
+     
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+
+    local function unequipAllPets()
+        local petsFolder = LocalPlayer:FindFirstChild("petsFolder")
+        for _, petFolder in pairs(petsFolder:GetChildren()) do
+            if petFolder:IsA("Folder") then
+                for _, pet in pairs(petFolder:GetChildren()) do
+                    ReplicatedStorage.rEvents.equipPetEvent:FireServer("unequipPet", pet)
+                end
+            end
+        end
+        task.wait(.1)
+    end
+
+    local function equipPet(petName)
+        unequipAllPets()
+        task.wait(.1)
+        for _, pet in pairs(LocalPlayer.petsFolder.Unique:GetChildren()) do
+            if pet.Name == petName then
+                ReplicatedStorage.rEvents.equipPetEvent:FireServer("equipPet", pet)
+            end
+        end
+    end
+
+    local function startStrengthAutomation()
+        while isRunning do
+            equipPet("Swift Samurai")
+
+            while isRunning do
+                for i = 1, setws do
+                    LocalPlayer.muscleEvent:FireServer("rep")
+                end
+               task.wait(setw)
+            end
+        end
+    end
+     
+    local switch = tabFastStrenght:AddSwitch("Fast Strenght", function(Value)
+         isRunning = Value
+            if Value then
+                task.spawn(startStrengthAutomation)
+            end
+        end)
+
+local frameToggle = tabFastStrenght:AddSwitch("Hide All Frames", function(bool)
+    local rSto = game:GetService("ReplicatedStorage")
+    for _, obj in pairs(rSto:GetChildren()) do
+        if obj.Name:match("Frame$") then
+            obj.Visible = not bool
+        end
+    end
+end)
+
+tabFastStrenght:AddLabel("Gym For Grind Strenght").TextSize = 25
+
+local VIM = game:GetService("VirtualInputManager")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local function pressE()
+    VIM:SendKeyEvent(true, "E", false, game)
+    task.wait(0.1)
+    VIM:SendKeyEvent(false, "E", false, game)
+end
+
+local function autoLift()
+    while getgenv().working do
+        LocalPlayer.muscleEvent:FireServer("rep")
+        task.wait()
+    end
+end
+
+local function teleportAndStart(machineName, position)
+    local character = LocalPlayer.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        character.HumanoidRootPart.CFrame = position
+        task.wait(0.1)
+        pressE()
+        task.spawn(autoLift)
+    end
+end
+
+tabFastStrenght:AddSwitch("Jungle Squat", function(bool)
+    if getgenv().working and not bool then
+        getgenv().working = false
+        return
+    end
+    
+    getgenv().working = bool
+    if bool then
+        teleportAndStart("Squat", CFrame.new(-8352, 34, 2878))
+    end
+end)
+
+tabFastStrenght:AddLabel("Complements").TextSize = 25
+
+local function activateProteinEgg()
+    local tool = player.Character:FindFirstChild("Protein Egg") or player.Backpack:FindFirstChild("Protein Egg")
+    if tool then
+        muscleEvent:FireServer("proteinEgg", tool)
+    end
+end
+
+local running = false
+
+task.spawn(function()
+    while true do
+        if running then
+            activateProteinEgg()
+            task.wait(1800)
+        else
+            task.wait(1)
+        end
+    end
+end)
+
+local switch = tabFastStrenght:AddSwitch("Auto Eat Egg", function(state)
+    running = state
+    if state then
+        activateProteinEgg()
+    end
+end)
+
+tabFastStrenght:AddButton("Remove Textures", function()
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("Decal") or v:IsA("Texture") then
+            v.Transparency = 1
+        end
+    end
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Textures removed!",
+        Duration = 5
+    })
+end)
+ 
+tabFastStrenght:AddButton("Reduce Graphics", function()
+    settings().Rendering.QualityLevel = 1
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Graphics reduced!",
+        Duration = 5
+    })
+end)
+ 
+tabFastStrenght:AddButton("Disable Effects", function()
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+            v.Enabled = false
+        end
+    end
+ 
+    local lighting = game:GetService("Lighting")
+    for _, v in pairs(lighting:GetChildren()) do
+        if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
+            v.Enabled = false
+        end
+    end
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Effects disabled!",
+        Duration = 5
+    })
+end)
+ 
+tabFastStrenght:AddButton("Simplify Materials", function()
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("BasePart") and not v:IsA("MeshPart") then
+            v.Material = Enum.Material.SmoothPlastic
+            if v.Parent and (v.Parent:FindFirstChild("Humanoid") or v.Parent.Parent:FindFirstChild("Humanoid")) then
+            else
+                v.Reflectance = 0
+            end
+        end
+    end
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Materials simplified!",
+        Duration = 5
+    })
+end)
+ 
+tabFastStrenght:AddButton("Remove Fog", function()
+    local lighting = game:GetService("Lighting")
+    lighting.FogEnd = 9e9
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Fog removed!",
+        Duration = 5
+    })
+end)
+ 
+tabFastStrenght:AddButton("Full Optimization", function()
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+            v.Enabled = false
+        end
+    end
+ 
+    local lighting = game:GetService("Lighting")
+    lighting.GlobalShadows = false
+    lighting.FogEnd = 9e9
+    lighting.Brightness = 0
+ 
+    settings().Rendering.QualityLevel = 1
+ 
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("Decal") or v:IsA("Texture") then
+            v.Transparency = 1
+        elseif v:IsA("BasePart") and not v:IsA("MeshPart") then
+            v.Material = Enum.Material.SmoothPlastic
+            if v.Parent and (v.Parent:FindFirstChild("Humanoid") or v.Parent.Parent:FindFirstChild("Humanoid")) then
+            else
+                v.Reflectance = 0
+            end
+        end
+    end
+ 
+    for _, v in pairs(lighting:GetChildren()) do
+        if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
+            v.Enabled = false
+        end
+    end
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Full optimization applied!",
+        Duration = 5
+    })
+end)
+
+local tabFastRebirths = window:AddTab("Fast Rebirths")
+
+tabFastRebirths:AddSwitch("Fast Rebirth", function(bool)
+            fastRebirth = bool
+ 
+            if fastRebirth then
+                spawn(function()
+                    local a = game:GetService("ReplicatedStorage")
+                    local b = game:GetService("Players")
+                    local c = b.LocalPlayer
+ 
+                    local d = function(e)
+                        local f = c.petsFolder
+                        for g, h in pairs(f:GetChildren()) do
+                            if h:IsA("Folder") then
+                                for i, j in pairs(h:GetChildren()) do
+                                    a.rEvents.equipPetEvent:FireServer("unequipPet", j)
+                                end
+                            end
+                        end
+                        task.wait(.1)
+                    end
+ 
+                    local k = function(l)
+                        d()
+                        task.wait(.01)
+                        for m, n in pairs(c.petsFolder.Unique:GetChildren()) do
+                            if n.Name == l then
+                                a.rEvents.equipPetEvent:FireServer("equipPet", n)
+                            end
+                        end
+                    end
+ 
+                    local o = function(p)
+                        local q = workspace.machinesFolder:FindFirstChild(p)
+                        if not q then
+                            for r, s in pairs(workspace:GetChildren()) do
+                                if s:IsA("Folder") and s.Name:find("machines") then
+                                    q = s:FindFirstChild(p)
+                                    if q then break end
+                                end
+                            end
+                        end
+                        return q
+                    end
+ 
+                    local t = function()
+                        local u = game:GetService("VirtualInputManager")
+                        u:SendKeyEvent(true, "E", false, game)
+                        task.wait(.1)
+                        u:SendKeyEvent(false, "E", false, game)
+                    end
+ 
+                    while fastRebirth do
+                        local v = c.leaderstats.Rebirths.Value
+                        local w = 10000 + (5000 * v)
+                        if c.ultimatesFolder:FindFirstChild("Golden Rebirth") then
+                            local x = c.ultimatesFolder["Golden Rebirth"].Value
+                            w = math.floor(w * (1 - (x * 0.1)))
+                        end
+ 
+                        d()
+                        task.wait(.1)
+                        k("Swift Samurai")
+ 
+                        while c.leaderstats.Strength.Value < w do
+                            for y = 1, 10 do
+                                c.muscleEvent:FireServer("rep")
+                            end
+                            task.wait()
+                        end
+ 
+                        d()
+                        task.wait(.1)
+                        k("Tribal Overlord")
+ 
+                        local z = o("Jungle Bar Lift")
+                        if z and z:FindFirstChild("interactSeat") then
+                            c.Character.HumanoidRootPart.CFrame = z.interactSeat.CFrame * CFrame.new(0, 3, 0)
+                            repeat
+                                task.wait(.1)
+                                t()
+                            until c.Character.Humanoid.Sit
+                        end
+ 
+                        local A = c.leaderstats.Rebirths.Value
+                        repeat
+                            a.rEvents.rebirthRemote:InvokeServer("rebirthRequest")
+                            task.wait(.1)
+                        until c.leaderstats.Rebirths.Value > A
+ 
+                        task.wait()
+                    end
+                end)
+            end
+        end)
+
+tabFastRebirths:AddLabel("Complements").TextSize = 25
+
+local VIM = game:GetService("VirtualInputManager")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local function pressE()
+    VIM:SendKeyEvent(true, "E", false, game)
+    task.wait(0.1)
+    VIM:SendKeyEvent(false, "E", false, game)
+end
+
+local function autoLift()
+    while getgenv().working do
+        LocalPlayer.muscleEvent:FireServer("rep")
+        task.wait()
+    end
+end
+
+local function teleportAndStart(machineName, position)
+    local character = LocalPlayer.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        character.HumanoidRootPart.CFrame = position
+        task.wait(0.1)
+        pressE()
+        task.spawn(autoLift)
+    end
+end
+
+tabFastRebirths:AddSwitch("Jungle Lift", function(bool)
+    if getgenv().working and not bool then
+        getgenv().working = false
+        return
+    end
+    
+    getgenv().working = bool
+    if bool then
+        teleportAndStart("Pull Up", CFrame.new(-8666, 34, 2070))
+    end
+end)
+
+local switch = tabFastRebirths:AddSwitch("Lock Position", function(Value)
+    if Value then
+        
+        local currentPos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+        getgenv().posLock = game:GetService("RunService").Heartbeat:Connect(function()
+            if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = currentPos
+            end
+        end)
+    else
+        
+        if getgenv().posLock then
+            getgenv().posLock:Disconnect()
+            getgenv().posLock = nil
+        end
+    end
+end)
+
+local function activateProteinEgg()
+    local tool = player.Character:FindFirstChild("Protein Egg") or player.Backpack:FindFirstChild("Protein Egg")
+    if tool then
+        muscleEvent:FireServer("proteinEgg", tool)
+    end
+end
+
+local running = false
+
+task.spawn(function()
+    while true do
+        if running then
+            activateProteinEgg()
+            task.wait(1800)
+        else
+            task.wait(1)
+        end
+    end
+end)
+
+local switch = tabFastRebirths:AddSwitch("Auto Eat Egg", function(state)
+    running = state
+    if state then
+        activateProteinEgg()
+    end
+end)
+
+tabFastRebirths:AddButton("Remove Textures", function()
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("Decal") or v:IsA("Texture") then
+            v.Transparency = 1
+        end
+    end
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Textures removed!",
+        Duration = 5
+    })
+end)
+ 
+tabFastRebirths:AddButton("Reduce Graphics", function()
+    settings().Rendering.QualityLevel = 1
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Graphics reduced!",
+        Duration = 5
+    })
+end)
+ 
+tabFastRebirths:AddButton("Disable Effects", function()
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+            v.Enabled = false
+        end
+    end
+ 
+    local lighting = game:GetService("Lighting")
+    for _, v in pairs(lighting:GetChildren()) do
+        if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
+            v.Enabled = false
+        end
+    end
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Effects disabled!",
+        Duration = 5
+    })
+end)
+ 
+tabFastRebirths:AddButton("Simplify Materials", function()
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("BasePart") and not v:IsA("MeshPart") then
+            v.Material = Enum.Material.SmoothPlastic
+            if v.Parent and (v.Parent:FindFirstChild("Humanoid") or v.Parent.Parent:FindFirstChild("Humanoid")) then
+            else
+                v.Reflectance = 0
+            end
+        end
+    end
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Materials simplified!",
+        Duration = 5
+    })
+end)
+ 
+tabFastRebirths:AddButton("Remove Fog", function()
+    local lighting = game:GetService("Lighting")
+    lighting.FogEnd = 9e9
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Fog removed!",
+        Duration = 5
+    })
+end)
+ 
+tabFastRebirths:AddButton("Full Optimization", function()
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("ParticleEmitter") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+            v.Enabled = false
+        end
+    end
+ 
+    local lighting = game:GetService("Lighting")
+    lighting.GlobalShadows = false
+    lighting.FogEnd = 9e9
+    lighting.Brightness = 0
+ 
+    settings().Rendering.QualityLevel = 1
+ 
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("Decal") or v:IsA("Texture") then
+            v.Transparency = 1
+        elseif v:IsA("BasePart") and not v:IsA("MeshPart") then
+            v.Material = Enum.Material.SmoothPlastic
+            if v.Parent and (v.Parent:FindFirstChild("Humanoid") or v.Parent.Parent:FindFirstChild("Humanoid")) then
+            else
+                v.Reflectance = 0
+            end
+        end
+    end
+ 
+    for _, v in pairs(lighting:GetChildren()) do
+        if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
+            v.Enabled = false
+        end
+    end
+ 
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Performance",
+        Text = "Full optimization applied!",
+        Duration = 5
+    })
+end)
+
+local tabRock = window:AddTab("Rock")
+
+function gettool()
+    for i, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+        if v.Name == "Punch" and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+            game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+        end
+    end
+    game:GetService("Players").LocalPlayer.muscleEvent:FireServer("punch", "leftHand")
+    game:GetService("Players").LocalPlayer.muscleEvent:FireServer("punch", "rightHand")
+end
+
+tabRock:AddSwitch("Tiny Rock", function(Value)
+    selectrock = "Tiny Island Rock"
+    getgenv().autoFarm = Value
+    
+    task.spawn(function()
+        while getgenv().autoFarm do
+            task.wait()
+            if not getgenv().autoFarm then break end
+            
+            if game:GetService("Players").LocalPlayer.Durability.Value >= 0 then
+                for i, v in pairs(game:GetService("Workspace").machinesFolder:GetDescendants()) do
+                    if v.Name == "neededDurability" and v.Value == 0 and game.Players.LocalPlayer.Character:FindFirstChild("LeftHand") and game.Players.LocalPlayer.Character:FindFirstChild("RightHand") then
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 1)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 1)
+                        gettool()
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+tabRock:AddSwitch("Starter Rock", function(Value)
+    selectrock = "Starter Island Rock"
+    getgenv().autoFarm = Value
+    
+    task.spawn(function()
+        while getgenv().autoFarm do
+            task.wait()
+            if not getgenv().autoFarm then break end
+            
+            if game:GetService("Players").LocalPlayer.Durability.Value >= 100 then
+                for i, v in pairs(game:GetService("Workspace").machinesFolder:GetDescendants()) do
+                    if v.Name == "neededDurability" and v.Value == 100 and game.Players.LocalPlayer.Character:FindFirstChild("LeftHand") and game.Players.LocalPlayer.Character:FindFirstChild("RightHand") then
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 1)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 1)
+                        gettool()
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+tabRock:AddSwitch("Legend Beach Rock", function(Value)
+    selectrock = "Legend Beach Rock"
+    getgenv().autoFarm = Value
+    
+    task.spawn(function()
+        while getgenv().autoFarm do
+            task.wait()
+            if not getgenv().autoFarm then break end
+            
+            if game:GetService("Players").LocalPlayer.Durability.Value >= 5000 then
+                for i, v in pairs(game:GetService("Workspace").machinesFolder:GetDescendants()) do
+                    if v.Name == "neededDurability" and v.Value == 5000 and game.Players.LocalPlayer.Character:FindFirstChild("LeftHand") and game.Players.LocalPlayer.Character:FindFirstChild("RightHand") then
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 1)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 1)
+                        gettool()
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+tabRock:AddSwitch("Frozen Rock", function(Value)
+    selectrock = "Frost Gym Rock"
+    getgenv().autoFarm = Value
+    
+    task.spawn(function()
+        while getgenv().autoFarm do
+            task.wait()
+            if not getgenv().autoFarm then break end
+            
+            if game:GetService("Players").LocalPlayer.Durability.Value >= 150000 then
+                for i, v in pairs(game:GetService("Workspace").machinesFolder:GetDescendants()) do
+                    if v.Name == "neededDurability" and v.Value == 150000 and game.Players.LocalPlayer.Character:FindFirstChild("LeftHand") and game.Players.LocalPlayer.Character:FindFirstChild("RightHand") then
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 1)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 1)
+                        gettool()
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+tabRock:AddSwitch("Mythical Rock", function(Value)
+    selectrock = "Mythical Gym Rock"
+    getgenv().autoFarm = Value
+    
+    task.spawn(function()
+        while getgenv().autoFarm do
+            task.wait()
+            if not getgenv().autoFarm then break end
+            
+            if game:GetService("Players").LocalPlayer.Durability.Value >= 400000 then
+                for i, v in pairs(game:GetService("Workspace").machinesFolder:GetDescendants()) do
+                    if v.Name == "neededDurability" and v.Value == 400000 and game.Players.LocalPlayer.Character:FindFirstChild("LeftHand") and game.Players.LocalPlayer.Character:FindFirstChild("RightHand") then
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 1)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 1)
+                        gettool()
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+tabRock:AddSwitch("Eternal Rock", function(Value)
+    selectrock = "Eternal Gym Rock"
+    getgenv().autoFarm = Value
+    
+    task.spawn(function()
+        while getgenv().autoFarm do
+            task.wait()
+            if not getgenv().autoFarm then break end
+            
+            if game:GetService("Players").LocalPlayer.Durability.Value >= 750000 then
+                for i, v in pairs(game:GetService("Workspace").machinesFolder:GetDescendants()) do
+                    if v.Name == "neededDurability" and v.Value == 750000 and game.Players.LocalPlayer.Character:FindFirstChild("LeftHand") and game.Players.LocalPlayer.Character:FindFirstChild("RightHand") then
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 1)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 1)
+                        gettool()
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+tabRock:AddSwitch("Legend Rock", function(Value)
+    selectrock = "Legend Gym Rock"
+    getgenv().autoFarm = Value
+    
+    task.spawn(function()
+        while getgenv().autoFarm do
+            task.wait()
+            if not getgenv().autoFarm then break end
+            
+            if game:GetService("Players").LocalPlayer.Durability.Value >= 1000000 then
+                for i, v in pairs(game:GetService("Workspace").machinesFolder:GetDescendants()) do
+                    if v.Name == "neededDurability" and v.Value == 1000000 and game.Players.LocalPlayer.Character:FindFirstChild("LeftHand") and game.Players.LocalPlayer.Character:FindFirstChild("RightHand") then
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 1)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 1)
+                        gettool()
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+tabRock:AddSwitch("Muscle King Rock", function(Value)
+    selectrock = "Muscle King Gym Rock"
+    getgenv().autoFarm = Value
+    
+    task.spawn(function()
+        while getgenv().autoFarm do
+            task.wait()
+            if not getgenv().autoFarm then break end
+            
+            if game:GetService("Players").LocalPlayer.Durability.Value >= 5000000 then
+                for i, v in pairs(game:GetService("Workspace").machinesFolder:GetDescendants()) do
+                    if v.Name == "neededDurability" and v.Value == 5000000 and game.Players.LocalPlayer.Character:FindFirstChild("LeftHand") and game.Players.LocalPlayer.Character:FindFirstChild("RightHand") then
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 1)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 1)
+                        gettool()
+                    end
+                end
+            end
+        end
+    end)
+end)
+
+tabRock:AddSwitch("Jungle Rock", function(Value)
+    selectrock = "Ancient Jungle Rock"
+    getgenv().autoFarm = Value
+    
+    task.spawn(function()
+        while getgenv().autoFarm do
+            task.wait()
+            if not getgenv().autoFarm then break end
+            
+            if game:GetService("Players").LocalPlayer.Durability.Value >= 10000000 then
+                for i, v in pairs(game:GetService("Workspace").machinesFolder:GetDescendants()) do
+                    if v.Name == "neededDurability" and v.Value == 10000000 and game.Players.LocalPlayer.Character:FindFirstChild("LeftHand") and game.Players.LocalPlayer.Character:FindFirstChild("RightHand") then
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.RightHand, 1)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 0)
+                        firetouchinterest(v.Parent.Rock, game:GetService("Players").LocalPlayer.Character.LeftHand, 1)
+                        gettool()
+                    end
+                end
+            end
+        end
+    end)
+end)
+
