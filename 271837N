@@ -1076,8 +1076,6 @@ local button = Killing:AddButton("Remove Attack Animations", function()
     end
 end)
 
-local nothingLabel = Killing:AddLabel("")
-
 local killingLabel = Killing:AddLabel("Auto Kill")
 killingLabel.TextSize = 20
 
@@ -1140,7 +1138,7 @@ local switch = Killing:AddSwitch("Kill Everyone", function(bool)
 end)
 switch:Set(false)
 
-local switch = Killing:AddSwitch("Whitelist Friends", function(bool)
+local switch = Killing:AddSwitch("Auto Whitelist Friends", function(bool)
     _G.whitelistFriends = bool
 
     if bool then
@@ -1166,12 +1164,10 @@ end)
 
 switch:Set(false)
 
-local nothingLabel = Killing:AddLabel("")
-
 local killtargetLabel = Killing:AddLabel("Kill Targets")
 killtargetLabel.TextSize = 20
 
-local blacklistDropdown = Killing:AddDropdown("Blacklist", function(selectedText)
+local blacklistDropdown = Killing:AddDropdown("Select Target", function(selectedText)
     local playerName = selectedText:match("| (.+)$")
     if playerName then
         playerName = playerName:gsub("^%s*(.-)%s*$", "%1") 
@@ -1216,7 +1212,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(player)
     end
 end)
 
-local blacklistKillSwitch = Killing:AddSwitch("Kill Blacklist", function(bool)
+local blacklistKillSwitch = Killing:AddSwitch("Kill Target(s)", function(bool)
     _G.killBlacklistedOnly = bool
     if bool then
         if not _G.blacklistKillConnection then
