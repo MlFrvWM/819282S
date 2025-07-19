@@ -1347,9 +1347,9 @@ end
 
 local function updateBlacklistLabel()
     if #_G.blacklistedPlayers == 0 then
-        blacklistLabel.Text = "Blacklist: None"
+        blacklistLabel.Text = "Targets: None"
     else
-        blacklistLabel.Text = "Blacklist: " .. table.concat(_G.blacklistedPlayers, ", ")
+        blacklistLabel.Text = "Targets: " .. table.concat(_G.blacklistedPlayers, ", ")
     end
 end
 
