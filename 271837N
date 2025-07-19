@@ -887,7 +887,7 @@ local function isWhitelisted(player)
 end
 
 local killingLabel = Killing:AddLabel("Auto Kill")
-killingLabel.TextSize = 20
+killingLabel.TextSize = 15
 
 _G.whitelistedPlayers = _G.whitelistedPlayers or {}
 _G.blacklistedPlayers = _G.blacklistedPlayers or {}
@@ -975,7 +975,7 @@ end)
 switch:Set(false)
 
 local killtargetLabel = Killing:AddLabel("Kill Targets")
-killtargetLabel.TextSize = 20
+killtargetLabel.TextSize = 15
 
 local blacklistDropdown = Killing:AddDropdown("Select Target", function(selectedText)
     local playerName = selectedText:match("| (.+)$")
@@ -1093,7 +1093,7 @@ Killing:AddSwitch("Spy Player", function(bool)
 end)
 
 local deathringLabel = Killing:AddLabel("Kill Aura")
-deathringLabel.TextSize = 20
+deathringLabel.TextSize = 15
 
 Killing:AddTextBox("Range (1-140)", function(text)
     local range = tonumber(text)
@@ -1329,11 +1329,11 @@ Killing:AddButton("Clear Whitelist", function()
     _G.whitelistedPlayers = {}
 end)
 
-local blacklistLabel = Killing:AddLabel("Blacklist: None")
+local blacklistLabel = Killing:AddLabel("Targets: None")
 blacklistLabel.TextColor3 = Color3.fromRGB(191, 25, 25)
 blacklistLabel.TextSize = 17
 
-Killing:AddButton("Clear Blacklist", function()
+Killing:AddButton("Clear Targets", function()
     _G.blacklistedPlayers = {}
 end)
 
