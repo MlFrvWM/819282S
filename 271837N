@@ -1234,58 +1234,53 @@ local blacklistKillSwitch = Killing:AddSwitch("Kill Target(s)", function(bool)
     end
 end)
 
+local spyTargetDropdown = Killing:AddDropdown("Select Spy Target", function(name)
+    targetPlayerName = name
+end)
 
-local playerToSpectate = nil
-local spectating = false
-local camera = game.Workspace.CurrentCamera
-local currentTargetConnection = nil
-
-local function updateSpectateTarget(targetPlayer)
-    if currentTargetConnection then
-        currentTargetConnection:Disconnect()
-        currentTargetConnection = nil
+for _, player in ipairs(Players:GetPlayers()) do
+    if player ~= LocalPlayer then
+        spyTargetDropdown:Add(player.Name)
     end
-
-    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
-        camera.CameraSubject = targetPlayer.Character.Humanoid
-    end
-
-    currentTargetConnection = targetPlayer.CharacterAdded:Connect(function(newCharacter)
-        local humanoid = newCharacter:WaitForChild("Humanoid", 5)
-        if humanoid then
-            camera.CameraSubject = humanoid
-        end
-    end)
 end
 
-Killing:AddTextBox("Player", function(text)
-    playerToSpectate = text
-end, {
-    ["cleartext"] = true,
-    ["text"] = ""
-})
+Players.PlayerAdded:Connect(function(player)
+    if player ~= LocalPlayer then
+        spyTargetDropdown:Add(player.Name)
+    end
+end)
 
-Killing:AddSwitch("Spectate", function(bool)
-    spectating = bool
-
-    if spectating and playerToSpectate then
-        local targetPlayer = game.Players:FindFirstChild(playerToSpectate)
-        if targetPlayer then
-            updateSpectateTarget(targetPlayer)
-        end
-    else
-        if currentTargetConnection then
-            currentTargetConnection:Disconnect()
-            currentTargetConnection = nil
-        end
-        local localPlayer = game.Players.LocalPlayer
-        if localPlayer.Character and localPlayer.Character:FindFirstChild("Humanoid") then
-            camera.CameraSubject = localPlayer.Character.Humanoid
+Players.PlayerRemoving:Connect(function(player)
+    if player ~= LocalPlayer then
+        spyTargetDropdown:Clear()
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr ~= LocalPlayer then
+                spyTargetDropdown:Add(plr.Name)
+            end
         end
     end
-end):Set(false)
+end)
 
-local nothingLabel = Killing:AddLabel("")
+Killing:AddSwitch("Spy Player", function(bool)
+    spying = bool
+    if not spying then
+        local cam = workspace.CurrentCamera
+        cam.CameraSubject = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") or LocalPlayer
+        return
+    end
+    task.spawn(function()
+        while spying do
+            local target = Players:FindFirstChild(targetPlayerName)
+            if target and target ~= LocalPlayer then
+                local humanoid = target.Character and target.Character:FindFirstChild("Humanoid")
+                if humanoid then
+                    workspace.CurrentCamera.CameraSubject = humanoid
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
+end)
 
 local deathringLabel = Killing:AddLabel("Kill Aura")
 deathringLabel.TextSize = 20
@@ -1325,7 +1320,37 @@ local deathRingSwitch = Killing:AddSwitch("Death Ring", function(bool)
 end)
 deathRingSwitch:Set(false)
 
-local nothingLabel = Killing:AddLabel("")
+Killing:AddSwitch("Auto Equip Punch", function(state)
+	autoEquipPunch = state
+	task.spawn(function()
+		while autoEquipPunch do
+			local punch = LocalPlayer.Backpack:FindFirstChild("Punch")
+			if punch then
+				punch.Parent = LocalPlayer.Character
+			end
+			task.wait(0.1)
+		end
+	end)
+end)
+
+Killing:AddSwitch("Auto Punch [No Animation]", function(state)
+	autoPunchNoAnim = state
+	task.spawn(function()
+		while autoPunchNoAnim do
+			local punch = LocalPlayer.Backpack:FindFirstChild("Punch") or LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Punch")
+			if punch then
+				if punch.Parent ~= LocalPlayer.Character then
+					punch.Parent = LocalPlayer.Character
+				end
+				LocalPlayer.muscleEvent:FireServer("punch", "rightHand")
+				LocalPlayer.muscleEvent:FireServer("punch", "leftHand")
+			else
+				autoPunchNoAnim = false
+			end
+			task.wait(0.01)
+		end
+	end)
+end)
 
 local whitelistLabel = Killing:AddLabel("Whitelist: None")
 whitelistLabel.TextColor3 = Color3.fromRGB(26, 212, 51)
