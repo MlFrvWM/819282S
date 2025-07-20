@@ -324,7 +324,7 @@ end)
 local tabFastRebirths = window:AddTab("Fast Rebirths")
 
 local rebirthsLabel = tabFastRebirths:AddLabel("Rebirths: 0")
-rebirthsLabel.TextSize = 17
+rebirthsLabel.TextSize = 25
 
 local function getRebirths()
     local stats = game.Players.LocalPlayer:FindFirstChild("leaderstats")
