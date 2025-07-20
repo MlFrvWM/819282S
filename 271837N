@@ -1443,6 +1443,28 @@ end)
 
 tabMisc:AddLabel("Misc").TextSize = 20
 
+local timeDropdown = tabMisc:AddDropdown("Change Time", function(selection)
+    local lighting = game:GetService("Lighting")
+    
+    if selection == "Night" then
+        lighting.ClockTime = 0
+    elseif selection == "Day" then
+        lighting.ClockTime = 12
+    elseif selection == "Midnight" then
+        lighting.ClockTime = 6
+    end
+    
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Hora Cambiada",
+        Text = "La hora del dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­a ha sido cambiada a: " .. selection,
+        Duration = 0
+    })
+end)
+
+timeDropdown:Add("Night")
+timeDropdown:Add("Day")
+timeDropdown:Add("Midnight")
+
 tabMisc:AddButton("Remove Portals", function()
     for _, portal in pairs(game:GetDescendants()) do
         if portal.Name == "RobloxForwardPortals" then
@@ -1543,28 +1565,6 @@ tabMisc:AddSwitch("Full Walk on Water", function(bool)
     end
 end)
 
-local timeDropdown = tabMisc:AddDropdown("Change Time", function(selection)
-    local lighting = game:GetService("Lighting")
-    
-    if selection == "Night" then
-        lighting.ClockTime = 0
-    elseif selection == "Day" then
-        lighting.ClockTime = 12
-    elseif selection == "Midnight" then
-        lighting.ClockTime = 6
-    end
-    
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Hora Cambiada",
-        Text = "La hora del dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­a ha sido cambiada a: " .. selection,
-        Duration = 0
-    })
-end)
-
-timeDropdown:Add("Night")
-timeDropdown:Add("Day")
-timeDropdown:Add("Midnight")
-
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
@@ -1617,6 +1617,8 @@ local showKillsButton = tabMisc:AddButton("Show Kills Gui", function()
 end)
 
 showKillsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+tabMisc:AddLabel("Useful").TextSize = 20
 
 local godModeToggle = false
         tabMisc:AddSwitch("God Mode (Brawl)", function(State)
