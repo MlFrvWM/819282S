@@ -1542,6 +1542,8 @@ end)
 
 showKillsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 
+tabMisc:AddLabel("Useful").TextSize = 20
+
 tabMisc:AddSwitch("Auto Fortune Wheel", function(Value)
     _G.autoFortuneWheelActive = Value
     if Value then
