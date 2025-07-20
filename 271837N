@@ -1443,28 +1443,6 @@ end)
 
 tabMisc:AddLabel("Misc").TextSize = 20
 
-local timeDropdown = tabMisc:AddDropdown("Change Time", function(selection)
-    local lighting = game:GetService("Lighting")
-    
-    if selection == "Night" then
-        lighting.ClockTime = 0
-    elseif selection == "Day" then
-        lighting.ClockTime = 12
-    elseif selection == "Midnight" then
-        lighting.ClockTime = 6
-    end
-    
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Hora Cambiada",
-        Text = "La hora del dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­a ha sido cambiada a: " .. selection,
-        Duration = 0
-    })
-end)
-
-timeDropdown:Add("Night")
-timeDropdown:Add("Day")
-timeDropdown:Add("Midnight")
-
 tabMisc:AddButton("Remove Portals", function()
     for _, portal in pairs(game:GetDescendants()) do
         if portal.Name == "RobloxForwardPortals" then
@@ -1488,6 +1466,113 @@ tabMisc:AddButton("Remove Portals", function()
         Duration = 0
     })
 end)
+
+local timeDropdown = tabMisc:AddDropdown("Change Time", function(selection)
+    local lighting = game:GetService("Lighting")
+    
+    if selection == "Night" then
+        lighting.ClockTime = 0
+    elseif selection == "Day" then
+        lighting.ClockTime = 12
+    elseif selection == "Midnight" then
+        lighting.ClockTime = 6
+    end
+    
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Hora Cambiada",
+        Text = "La hora del dÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â­a ha sido cambiada a: " .. selection,
+        Duration = 0
+    })
+end)
+
+timeDropdown:Add("Night")
+timeDropdown:Add("Day")
+timeDropdown:Add("Midnight")
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local killsShown = false
+local killsGui = nil
+
+local showKillsButton = tabMisc:AddButton("Show Kills Gui", function()
+	killsShown = not killsShown
+
+	if killsShown then
+		if not killsGui then
+			killsGui = Instance.new("ScreenGui")
+			killsGui.Name = "KillsGui"
+			killsGui.ResetOnSpawn = false
+			killsGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+			local killsFrame = Instance.new("Frame")
+			killsFrame.Size = UDim2.new(0, 120, 0, 40)
+			killsFrame.Position = UDim2.new(0.5, -60, 0, 50)
+			killsFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+			killsFrame.Active = true
+			killsFrame.Draggable = true
+			killsFrame.Parent = killsGui
+
+			local killsLabel = Instance.new("TextLabel")
+			killsLabel.Size = UDim2.new(1, 0, 1, 0)
+			killsLabel.BackgroundTransparency = 1
+			killsLabel.TextColor3 = Color3.new(1, 1, 1)
+			killsLabel.TextScaled = true
+			killsLabel.Font = Enum.Font.SourceSansBold
+			killsLabel.Parent = killsFrame
+
+			coroutine.wrap(function()
+				while killsGui and killsGui.Parent do
+					local kills = LocalPlayer.leaderstats and LocalPlayer.leaderstats:FindFirstChild("Kills")
+					if kills then
+						killsLabel.Text = tostring(kills.Value)
+					end
+					task.wait(0.2)
+				end
+			end)()
+		else
+			killsGui.Enabled = true
+		end
+	else
+		if killsGui then
+			killsGui.Enabled = false
+		end
+	end
+end)
+
+showKillsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+tabMisc:AddSwitch("Auto Fortune Wheel", function(Value)
+    _G.autoFortuneWheelActive = Value
+    if Value then
+        local function openFortuneWheel()
+            while _G.autoFortuneWheelActive do
+                local args = {
+                    [1] = "openFortuneWheel",
+                    [2] = game:GetService("ReplicatedStorage"):WaitForChild("fortuneWheelChances"):WaitForChild("Fortune Wheel")
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("openFortuneWheelRemote"):InvokeServer(unpack(args))
+                wait(0)
+            end
+        end
+        coroutine.wrap(openFortuneWheel)()
+    else
+        _G.autoFortuneWheelActive = false
+    end
+end)
+
+local godModeToggle = false
+        tabMisc:AddSwitch("God Mode (Brawl)", function(State)
+            godModeToggle = State
+            if State then
+                task.spawn(function()
+                    while godModeToggle do
+                        game:GetService("ReplicatedStorage").rEvents.brawlEvent:FireServer("joinBrawl")
+                        task.wait(0)
+                    end
+                end)
+            end
+        end)
 
 local parts = {}
 local partSize = 2048
@@ -1562,92 +1647,5 @@ tabMisc:AddSwitch("Full Walk on Water", function(bool)
         createParts()
     else
         makePartsWalkthrough()
-    end
-end)
-
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
-local killsShown = false
-local killsGui = nil
-
-local showKillsButton = tabMisc:AddButton("Show Kills Gui", function()
-	killsShown = not killsShown
-
-	if killsShown then
-		if not killsGui then
-			killsGui = Instance.new("ScreenGui")
-			killsGui.Name = "KillsGui"
-			killsGui.ResetOnSpawn = false
-			killsGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-			local killsFrame = Instance.new("Frame")
-			killsFrame.Size = UDim2.new(0, 120, 0, 40)
-			killsFrame.Position = UDim2.new(0.5, -60, 0, 50)
-			killsFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-			killsFrame.Active = true
-			killsFrame.Draggable = true
-			killsFrame.Parent = killsGui
-
-			local killsLabel = Instance.new("TextLabel")
-			killsLabel.Size = UDim2.new(1, 0, 1, 0)
-			killsLabel.BackgroundTransparency = 1
-			killsLabel.TextColor3 = Color3.new(1, 1, 1)
-			killsLabel.TextScaled = true
-			killsLabel.Font = Enum.Font.SourceSansBold
-			killsLabel.Parent = killsFrame
-
-			coroutine.wrap(function()
-				while killsGui and killsGui.Parent do
-					local kills = LocalPlayer.leaderstats and LocalPlayer.leaderstats:FindFirstChild("Kills")
-					if kills then
-						killsLabel.Text = tostring(kills.Value)
-					end
-					task.wait(0.2)
-				end
-			end)()
-		else
-			killsGui.Enabled = true
-		end
-	else
-		if killsGui then
-			killsGui.Enabled = false
-		end
-	end
-end)
-
-showKillsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-
-tabMisc:AddLabel("Useful").TextSize = 20
-
-local godModeToggle = false
-        tabMisc:AddSwitch("God Mode (Brawl)", function(State)
-            godModeToggle = State
-            if State then
-                task.spawn(function()
-                    while godModeToggle do
-                        game:GetService("ReplicatedStorage").rEvents.brawlEvent:FireServer("joinBrawl")
-                        task.wait(0)
-                    end
-                end)
-            end
-        end)
-
-tabMisc:AddSwitch("Auto Fortune Wheel", function(Value)
-    _G.autoFortuneWheelActive = Value
-    if Value then
-        local function openFortuneWheel()
-            while _G.autoFortuneWheelActive do
-                local args = {
-                    [1] = "openFortuneWheel",
-                    [2] = game:GetService("ReplicatedStorage"):WaitForChild("fortuneWheelChances"):WaitForChild("Fortune Wheel")
-                }
-                game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("openFortuneWheelRemote"):InvokeServer(unpack(args))
-                wait(0)
-            end
-        end
-        coroutine.wrap(openFortuneWheel)()
-    else
-        _G.autoFortuneWheelActive = false
     end
 end)
