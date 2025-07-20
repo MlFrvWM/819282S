@@ -323,6 +323,25 @@ end)
 
 local tabFastRebirths = window:AddTab("Fast Rebirths")
 
+local rebirthsLabel = tabFastRebirths:AddLabel("Rebirths: 0")
+rebirthsLabel.TextSize = 17
+
+local function getRebirths()
+    local stats = game.Players.LocalPlayer:FindFirstChild("leaderstats")
+    if stats and stats:FindFirstChild("Rebirths") then
+        return stats.Rebirths.Value
+    end
+    return 0
+end
+
+task.spawn(function()
+    while true do
+        local currentRebirths = getRebirths()
+        rebirthsLabel.Text = "Rebirths: " .. tostring(currentRebirths)
+        task.wait(1)
+    end
+end)
+
 tabFastRebirths:AddSwitch("Fast Rebirth", function(bool)
             fastRebirth = bool
  
